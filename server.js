@@ -3,18 +3,33 @@ const cors = require('cors');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
 const { Pool } = require('pg');
-
+const userRoutes = require('./routes/userRoutes'); // Import the user routes
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 
 // Middleware
-app.use(cors());
+app.use(
+    cors({
+        origin: 'http://localhost:3000', // Frontend URL
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
+        credentials: true, // Enable cookies or tokens for cross-origin requests
+    })
+);
 app.use(helmet());
 app.use(express.json());
+
+// Ensure required environment variables are set
+const requiredEnvVars = ['DB_USER', 'DB_HOST', 'DB_NAME', 'DB_PASSWORD', 'DB_PORT', 'DATABASE_URL'];
+const missingEnvVars = requiredEnvVars.filter((varName) => !process.env[varName]);
+
+if (missingEnvVars.length > 0) {
+    console.error(`❌ Missing environment variables: ${missingEnvVars.join(', ')}`);
+    process.exit(1); // Exit if any required environment variables are missing
+}
 
 // Database Connection
 const pool = new Pool({
@@ -33,7 +48,8 @@ pool.connect()
 // Attach the pool to app locals for use in routes
 app.locals.pool = pool;
 
-
+// Register routes
+app.use('/api/users', userRoutes); // Attach the user routes under the /api/users path
 
 // Default Route for Health Check
 app.get('/', (req, res) => {
