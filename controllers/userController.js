@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
-const { createUser } = require('../models/userModel');
+const { createUser, getUserByUsername } = require('../models/userModel'); // Ensure getUserByUsername is imported
 
+// Register function
 const registerUser = async (req, res) => {
   const { firstname, lastname, username, email, createpassword } = req.body;
 
@@ -42,4 +43,43 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser };
+// Login function
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Username and password are required' });
+  }
+
+  try {
+    // Check if the user exists by username
+    const user = await getUserByUsername(username);
+
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid username' }); 
+    }
+
+    // Compare password
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.status(401).json({ error: 'Invalid password' }); 
+    }
+
+    // If login is successful
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+module.exports = { registerUser, loginUser }; 

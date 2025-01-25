@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 // Create a new user in the database
 const createUser = async (firstname, lastname, username, email, passwordHash) => {
-  console.log('Creating user with:', { firstname, lastname, username, email, passwordHash }); // Debugging log
+  console.log('Creating user with:', { firstname, lastname, username, email, passwordHash });
 
   try {
     const query = `
@@ -11,8 +11,7 @@ const createUser = async (firstname, lastname, username, email, passwordHash) =>
       RETURNING *;
     `;
     const values = [firstname, lastname, username, email, passwordHash];
-    
-    // Logging the values to verify what's being passed
+
     console.log('Values being passed to query:', values);
 
     const result = await pool.query(query, values);
@@ -23,6 +22,26 @@ const createUser = async (firstname, lastname, username, email, passwordHash) =>
   }
 };
 
+// Get user by username
+const getUserByUsername = async (username) => {
+  try {
+    const query = 'SELECT * FROM users WHERE username = $1';
+    const values = [username];
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length > 0) {
+      return result.rows[0];
+    } else {
+      return null; // User not found
+    }
+  } catch (error) {
+    console.error('Error fetching user by username:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   createUser,
+  getUserByUsername, 
 };
