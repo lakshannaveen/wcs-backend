@@ -2,8 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 const { Pool } = require('pg');
-const userRoutes = require('./routes/userRoutes'); // Import the user routes
+const userRoutes = require('./routes/userRoutes'); 
 
 // Load environment variables
 dotenv.config();
@@ -12,6 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 5002;
 
 // Middleware
+app.use(cookieParser()); // Add cookie-parser to handle cookies
 app.use(
     cors({
         origin: 'http://localhost:3000', // Frontend URL
