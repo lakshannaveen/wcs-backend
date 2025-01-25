@@ -24,7 +24,7 @@ const registerUser = async (req, res) => {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  // Check if password is a string (already done, but re-validate here for logging purposes)
+  // Check if password is a string
   if (typeof createpassword !== 'string') {
     return res.status(400).json({ error: 'Password must be a string' });
   }
@@ -40,6 +40,9 @@ const registerUser = async (req, res) => {
     // Generate JWT token
     const token = generateToken(newUser);
 
+    // Log token creation
+    console.log(`Token created for user ${newUser.username}: ${token}`);
+
     // Set the JWT token in the cookie
     res.cookie('token', token, {
       httpOnly: true,
@@ -47,7 +50,7 @@ const registerUser = async (req, res) => {
       sameSite: 'Strict', // Prevent CSRF attacks
     });
 
-    // Send the response with the user data (without sending the token in the body)
+    // Send the response
     res.status(201).json({
       message: 'User registered successfully',
       user: {
@@ -59,13 +62,14 @@ const registerUser = async (req, res) => {
   } catch (error) {
     console.error('Error during registration:', error);
 
-    if (error.code === '23505') { // Handle unique constraint violation (duplicate email/username)
+    if (error.code === '23505') { // Handle unique constraint violation
       res.status(400).json({ error: 'Email or username already exists' });
     } else {
       res.status(500).json({ error: 'Server error' });
     }
   }
 };
+
 
 // Login function
 const loginUser = async (req, res) => {

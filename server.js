@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const { Pool } = require('pg');
-const userRoutes = require('./routes/userRoutes'); 
+const userRoutes = require('./routes/userRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -13,16 +13,14 @@ const app = express();
 const PORT = process.env.PORT || 5002;
 
 // Middleware
-app.use(cookieParser()); // Add cookie-parser to handle cookies
-app.use(
-    cors({
-        origin: 'http://localhost:3000', // Frontend URL
-        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
-        credentials: true, // Enable cookies or tokens for cross-origin requests
-    })
-);
+app.use(cors({
+  origin: 'http://localhost:3000', // Adjust based on your frontend domain
+  credentials: true, // Allow cookies to be sent
+}));
+
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());  // Added cookieParser middleware if you're working with cookies
 
 // Ensure required environment variables are set
 const requiredEnvVars = ['DB_USER', 'DB_HOST', 'DB_NAME', 'DB_PASSWORD', 'DB_PORT', 'DATABASE_URL'];

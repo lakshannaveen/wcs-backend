@@ -14,11 +14,11 @@ const verifyToken = (req, res, next) => {
     req.user = decoded; // Store user info in request object
 
     // Log the successful token verification
-    console.log('Token verified successfully:', decoded);
+    console.log('Token verified successfully for user:', decoded.username);
 
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
-    console.error('Token verification failed:', error);
+    console.error('Token verification failed:', error.message);
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 };
