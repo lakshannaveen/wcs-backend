@@ -71,7 +71,6 @@ const registerUser = async (req, res) => {
 };
 
 
-// Login function
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
@@ -97,6 +96,9 @@ const loginUser = async (req, res) => {
     // Generate JWT token
     const token = generateToken(user);
 
+    // Log token creation
+    console.log(`Token created for user ${user.username}: ${token}`);
+
     // Set the JWT token in the cookie
     res.cookie('token', token, {
       httpOnly: true,
@@ -104,7 +106,7 @@ const loginUser = async (req, res) => {
       sameSite: 'Strict', // Prevent CSRF attacks
     });
 
-    // If login is successful, send the user details (without sending the token in the body)
+    // Send the response along with the token
     res.status(200).json({
       message: 'Login successful',
       user: {
@@ -112,6 +114,7 @@ const loginUser = async (req, res) => {
         username: user.username,
         email: user.email,
       },
+      // You no longer need to send the token in the response body
     });
 
   } catch (error) {
