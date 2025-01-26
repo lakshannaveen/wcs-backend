@@ -12,8 +12,8 @@ router.post('/login', loginUser);
 
 // Example of a protected route that requires authentication (JWT verification)
 router.get('/profile', verifyToken, (req, res) => {
-    res.status(200).json({ message: 'Protected content', user: req.user });
-  });
+  res.status(200).json({ message: 'Protected content', user: req.user });
+});
   
 
 module.exports = router;
