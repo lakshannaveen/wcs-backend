@@ -45,7 +45,7 @@ const registerUser = async (req, res) => {
 
     // Set the JWT token in the cookie
     res.cookie('token', token, {
-      
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production', // Set to true in production
       sameSite: 'Strict', // Prevent CSRF attacks
     });
@@ -101,6 +101,7 @@ const loginUser = async (req, res) => {
 
     // Set the JWT token in the cookie
     res.cookie('token', token, {
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production', // Set to true in production
       sameSite: 'Strict', // Prevent CSRF attacks
     });
