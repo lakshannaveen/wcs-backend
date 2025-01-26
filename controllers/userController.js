@@ -144,5 +144,23 @@ const protectedRoute = (req, res) => {
     user: req.user, // User info is available here
   });
 };
+//verify user logged to the system
+const verifyUserSession = async (req, res) => {
+  try {
+    const user = req.user; // Extracted from the token by verifyToken middleware
 
-module.exports = { registerUser, loginUser, getUserProfile, protectedRoute };
+    // Send user data if the token is valid
+    res.status(200).json({
+      message: 'Session is valid',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error('Error verifying user session:', error);
+    res.status(500).json({ error: 'Failed to verify session' });
+  }
+};
+module.exports = { registerUser, loginUser, getUserProfile, protectedRoute,verifyUserSession };
