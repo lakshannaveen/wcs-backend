@@ -4,7 +4,7 @@ const saveContact = async (req, res) => {
   try {
     const contact = await contactModel.createContact(req.body);
     res.status(201).json({
-      message: 'Contact saved successfully!',
+      message: 'Your message is saved successfully!',
       data: contact,
     });
   } catch (error) {
@@ -15,4 +15,19 @@ const saveContact = async (req, res) => {
 
 module.exports = {
   saveContact,
+};
+//get contact inquiries details
+const getAllContacts = async (req, res) => {
+  try {
+    const contacts = await contactModel.getAllContacts();
+    res.status(200).json(contacts);
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    res.status(500).json({ error: 'An error occurred while fetching contacts.' });
+  }
+};
+
+module.exports = {
+  saveContact,
+  getAllContacts, // Export the new method
 };
