@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const { getAdminByEmail } = require('../models/adminModel');
 
 const adminLogin = async (req, res) => {
@@ -14,11 +13,8 @@ const adminLogin = async (req, res) => {
       return res.status(401).json({ message: 'Invalid admin credentials!' });
     }
 
-    // Compare the provided password with the stored hashed password
-    const match = await bcrypt.compare(password, admin.password);
-
-    // If password doesn't match, send error
-    if (!match) {
+    // Compare the provided password with the stored password directly
+    if (password !== admin.password) {
       return res.status(401).json({ message: 'Invalid admin credentials!' });
     }
 
@@ -39,7 +35,6 @@ const adminLogin = async (req, res) => {
     // Respond with success message
     res.status(200).json({ message: 'Login successful' });
   } catch (err) {
-    // Handle errors
     console.error(err);
     res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
