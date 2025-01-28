@@ -5,6 +5,9 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const { Pool } = require('pg');
 const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+
+
 
 // Load environment variables
 dotenv.config();
@@ -51,6 +54,7 @@ app.locals.pool = pool;
 // Register routes
 app.use('/api/users', userRoutes); // Attach the user routes under the /api/users path
 
+app.use('/api/admin', adminRoutes);
 // Default Route for Health Check
 app.get('/', (req, res) => {
     res.status(200).send('Waste Collection System Backend is Running');
