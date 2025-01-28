@@ -22,14 +22,14 @@ const adminLogin = async (req, res) => {
     const token = jwt.sign(
       { id: admin.id, email: admin.email },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '15m' } // Set token to expire in 15 minutes
     );
 
     // Set the token in the cookie (HTTP-only and secure for production environments)
     res.cookie('adminauth', token, {
       httpOnly: true, // Prevents JavaScript from accessing the token
       secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      maxAge: 3600000, // Set the cookie to expire in 1 hour
+      maxAge: 15 * 60 * 1000, // Set the cookie to expire in 15 minutes
     });
 
     // Respond with success message

@@ -7,9 +7,10 @@ const router = express.Router();
 router.post('/adminlogin', adminLogin);
 
 // Protected route - authentication required via JWT token in cookies
-router.post('/admin/protected-route', checkAuth, (req, res) => {
-  res.send('Protected route accessible');
+router.get('/protected-route', checkAuth, (req, res) => {
+  res.json({ message: 'Protected route accessible', admin: req.admin }); // Return JSON instead of plain text
 });
+
 
 // Another example of a protected route (admin dashboard, for instance)
 router.get('/admin/dashboard', checkAuth, (req, res) => {
