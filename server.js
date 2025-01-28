@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const { Pool } = require('pg');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+
 
 
 
@@ -50,7 +52,8 @@ pool.connect()
 
 // Attach the pool to app locals for use in routes
 app.locals.pool = pool;
-
+// contact Routes
+app.use('/api/contact', contactRoutes);
 // Register routes
 app.use('/api/users', userRoutes); // Attach the user routes under the /api/users path
 
