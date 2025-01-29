@@ -27,7 +27,6 @@ const getAllContacts = async (req, res) => {
   }
 };
 
-
 // Controller method for updating reply status
 const updateReplyStatus = async (req, res) => {
   const { id, reply_sent } = req.body;
