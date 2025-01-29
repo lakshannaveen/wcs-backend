@@ -41,7 +41,28 @@ const getUserByUsername = async (username) => {
   }
 };
 
-module.exports = {
-  createUser,
-  getUserByUsername, 
+// Get user by email
+const getUserByEmail = async (email) => {
+  const query = 'SELECT * FROM users WHERE email = $1';
+  try {
+    const res = await pool.query(query, [email]);
+    return res.rows[0]; // Return user data (including password)
+  } catch (error) {
+    throw new Error('Error fetching user from database');
+  }
 };
+
+// Update password in the database
+const updatePasswordInDb = async (email, hashedPassword) => {
+  const query = 'UPDATE users SET password = $1 WHERE email = $2 RETURNING email';
+  const values = [hashedPassword, email];
+  
+  try {
+    const res = await pool.query(query, values);
+    return res.rows[0]; // Return the updated email
+  } catch (error) {
+    throw new Error('Error updating password in database');
+  }
+};
+
+module.exports = { getUserByEmail, updatePasswordInDb,getUserByUsername };

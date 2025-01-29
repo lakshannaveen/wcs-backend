@@ -7,7 +7,7 @@ const { Pool } = require('pg');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const contactRoutes = require('./routes/contactRoutes');
-
+const changePasswordRoute= require('./routes/changePasswordRoute.js')
 
 
 
@@ -59,6 +59,7 @@ app.use('/api/users', userRoutes); // Attach the user routes under the /api/user
 
 app.use('/api/admin', adminRoutes);
 // Default Route for Health Check
+app.use('/api/password', changePasswordRoute);
 app.get('/', (req, res) => {
     res.status(200).send('Waste Collection System Backend is Running');
 });
