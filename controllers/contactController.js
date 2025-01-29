@@ -27,7 +27,30 @@ const getAllContacts = async (req, res) => {
   }
 };
 
+
+// Controller method for updating reply status
+const updateReplyStatus = async (req, res) => {
+  const { id, reply_sent } = req.body;
+  
+  try {
+    const updatedContact = await contactModel.updateReplyStatus(id, reply_sent);
+    if (updatedContact) {
+      res.status(200).json(updatedContact); // Return the updated contact with reply_sent field
+    } else {
+      res.status(404).json({ error: 'Contact not found' });
+    }
+  } catch (error) {
+    console.error('Error updating reply status:', error);
+    res.status(500).json({ error: 'An error occurred while updating reply status.' });
+  }
+};
+
+
+
+
 module.exports = {
   saveContact,
-  getAllContacts, // Export the new method
+  getAllContacts,
+  updateReplyStatus, // Export the new method
 };
+
