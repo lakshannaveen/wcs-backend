@@ -21,6 +21,22 @@ const createFeedback = async (feedbackData) => {
   }
 };
 
+// Fetch all feedback from the database
+const getAllFeedback = async () => {
+  const query = `
+    SELECT * FROM feedback;
+  `;
+  
+  try {
+    const result = await pool.query(query);
+    return result.rows; // Return all feedback data
+  } catch (error) {
+    console.error('Error fetching feedback:', error); // Log any errors
+    throw error; // Re-throw error for further handling
+  }
+};
+
 module.exports = {
-  createFeedback // Ensure this is exported correctly
+  createFeedback, 
+  getAllFeedback // Ensure this is exported
 };
