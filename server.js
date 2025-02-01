@@ -7,6 +7,7 @@ const { Pool } = require('pg');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const feedbackRoutes = require('./routes/feedbackRoute');
 const changePasswordRoute= require('./routes/changePasswordRoute.js')
 
 
@@ -56,7 +57,8 @@ app.locals.pool = pool;
 app.use('/api/contact', contactRoutes);
 // Register routes
 app.use('/api/users', userRoutes); // Attach the user routes under the /api/users path
-
+// feedbackRoutes
+app.use('/api/feedback', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
 // Default Route for Health Check
 app.use('/api/password', changePasswordRoute);
