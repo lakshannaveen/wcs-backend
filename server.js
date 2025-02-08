@@ -9,6 +9,8 @@ const adminRoutes = require('./routes/adminRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const feedbackRoutes = require('./routes/feedbackRoute');
 const changePasswordRoute= require('./routes/changePasswordRoute.js')
+const checkoutRoutes = require("./routes/checkoutRoutes");
+
 
 
 
@@ -62,6 +64,8 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
 // Default Route for Health Check
 app.use('/api/password', changePasswordRoute);
+//checout toute
+app.use("/api/checkout", checkoutRoutes);
 app.get('/', (req, res) => {
     res.status(200).send('Waste Collection System Backend is Running');
 });
