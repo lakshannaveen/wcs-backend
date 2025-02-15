@@ -28,36 +28,36 @@ const saveCheckout = async (checkoutDetails) => {
   }
 
   const insertCheckoutQuery = `
-    INSERT INTO checkout (
-      user_id, sender_firstname, sender_lastname, sender_zip_code, sender_phone_number,
-      sender_email, recipient_firstname, recipient_lastname, recipient_zip_code, recipient_phone_number,
-      collection_time, subscription_type, selected_dates, selected_days, latitude, longitude,
-      house_number, street_name  -- Added fields in query
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
-    ) RETURNING id;
-  `;
+  INSERT INTO checkout (
+    user_id, sender_firstname, sender_lastname, sender_zip_code, sender_phone_number,
+    sender_email, recipient_firstname, recipient_lastname, recipient_zip_code, recipient_phone_number,
+    collection_time, subscription_type, selected_dates, selected_days, latitude, longitude,
+    house_number, street_name
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
+  ) RETURNING id;
+`;
 
-  const values = [
-    user_id,
-    sender_firstname,
-    sender_lastname,
-    sender_zip_code,
-    sender_phone_number,
-    sender_email,
-    recipient_firstname,
-    recipient_lastname,
-    recipient_zip_code,
-    recipient_phone_number,
-    collection_time,
-    subscription_type,
-    selected_dates,
-    selected_days,
-    latitude,
-    longitude,
-    house_number,
-    street_name,
-  ];
+const values = [
+  user_id,
+  sender_firstname,
+  sender_lastname,
+  sender_zip_code,
+  sender_phone_number,
+  sender_email,
+  recipient_firstname,
+  recipient_lastname,
+  recipient_zip_code,
+  recipient_phone_number,
+  collection_time,
+  subscription_type,
+  Array.isArray(selected_dates) ? selected_dates : [selected_dates], // Ensure it's an array
+  Array.isArray(selected_days) ? selected_days : [selected_days],     // Ensure it's an array
+  latitude,
+  longitude,
+  house_number,
+  street_name,
+];
 
   try {
     const result = await pool.query(insertCheckoutQuery, values);
