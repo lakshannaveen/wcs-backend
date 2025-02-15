@@ -1,49 +1,36 @@
-const Checkout = require("../models/checkoutModel");
+const Checkout = require('../models/checkoutModel');  // Importing the Checkout model
+const pool = require('../config/db');
 
-exports.placeOrder = async (req, res) => {
+// Handle the submission of the order and save data across all tables
+const placeOrder = async (req, res) => {
+  const { orderDetails, checkoutDetails } = req.body;
+  const { paymentMethod, amount } = orderDetails;
+
   try {
-    console.log("Received Order Data:", req.body); // Debugging incoming request
+    // Save checkout data and get checkout ID
+    const checkoutId = await Checkout.saveCheckout(checkoutDetails);
 
-    const orderData = req.body;
+    // Save payment data if payment method exists
+    if (paymentMethod) {
+      await Checkout.savePayment(checkoutId, paymentMethod, amount);
+    }
 
-    // Trim input fields to remove unnecessary spaces
-    Object.keys(orderData).forEach((key) => {
-      if (typeof orderData[key] === "string") {
-        orderData[key] = orderData[key].trim();
-      }
+    // Save subscription data if the user has a subscription
+    if (checkoutDetails.subscriptionType) {
+      await Checkout.saveSubscription(orderDetails.user_id, checkoutDetails.subscriptionType, new Date()); // Assuming today's date as the start date
+    }
+
+    // Respond with a success message
+    return res.status(200).json({
+      message: 'Order placed successfully',
+      checkoutId,
     });
-
-    // Validate required fields
-    if (!orderData.user_id || !orderData.subscription_id || !orderData.payment_method) {
-      return res.status(400).json({ error: "Missing required fields (user_id, subscription_id, payment_method)" });
-    }
-
-    // Validate location details
-    if (!orderData.latitude || !orderData.longitude) {
-      return res.status(400).json({ error: "Location details (latitude, longitude) are required" });
-    }
-
-    // Ensure user_id and subscription_id are numbers
-    if (isNaN(orderData.user_id) || isNaN(orderData.subscription_id)) {
-      return res.status(400).json({ error: "Invalid user_id or subscription_id. Must be numbers." });
-    }
-
-    // Ensure payment_method is valid
-    const validPaymentMethods = ["Online", "Cash on Delivery"];
-    if (!validPaymentMethods.includes(orderData.payment_method)) {
-      return res.status(400).json({ error: `Invalid payment method. Allowed: ${validPaymentMethods.join(", ")}` });
-    }
-
-    const newOrder = await Checkout.createOrder(orderData);
-    res.status(201).json({ message: "Order placed successfully", order: newOrder });
-
-  } catch (error) {
-    console.error("Error placing order:", error);
-
-    if (error.code === "23503") { // Foreign key violation (user_id or subscription_id doesn't exist)
-      return res.status(400).json({ error: "Invalid user_id or subscription_id" });
-    }
-
-    res.status(500).json({ error: "Internal server error" });
+  } catch (err) {
+    console.error('Error placing order:', err);
+    return res.status(500).json({ message: 'Failed to place order. Please try again.' });
   }
+};
+
+module.exports = {
+  placeOrder,
 };

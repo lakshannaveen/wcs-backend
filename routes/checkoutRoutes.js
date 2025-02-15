@@ -1,8 +1,8 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const checkoutController = require("../controllers/checkoutController");
+const checkoutController = require('../controllers/checkoutController');
 
-// Place an order
-router.post("/order", checkoutController.placeOrder);
+// Route for placing order
+router.post('/order', checkoutController.placeOrder);
 
 module.exports = router;
