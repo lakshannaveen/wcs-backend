@@ -19,6 +19,8 @@ const saveCheckout = async (checkoutDetails) => {
     selected_days,
     latitude,
     longitude,
+    house_number,
+    street_name, // Added fields
   } = checkoutDetails;
 
   if (!user_id) {
@@ -29,9 +31,10 @@ const saveCheckout = async (checkoutDetails) => {
     INSERT INTO checkout (
       user_id, sender_firstname, sender_lastname, sender_zip_code, sender_phone_number,
       sender_email, recipient_firstname, recipient_lastname, recipient_zip_code, recipient_phone_number,
-      collection_time, subscription_type, selected_dates, selected_days, latitude, longitude
+      collection_time, subscription_type, selected_dates, selected_days, latitude, longitude,
+      house_number, street_name  -- Added fields in query
     ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18
     ) RETURNING id;
   `;
 
@@ -52,6 +55,8 @@ const saveCheckout = async (checkoutDetails) => {
     selected_days,
     latitude,
     longitude,
+    house_number,
+    street_name,
   ];
 
   try {

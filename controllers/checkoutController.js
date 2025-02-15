@@ -9,11 +9,10 @@ const placeOrder = async (req, res) => {
       return res.status(400).json({ message: "Checkout details are missing." });
     }
 
-    console.log("Received Checkout Details:", checkoutDetails);  // Debugging log
+    console.log("Received Checkout Details:", checkoutDetails);
 
-    // Extract user_id correctly
     const userId = checkoutDetails.user_id || checkoutDetails.mapPageData?.userId;
-    
+
     if (!userId) {
       console.error("User ID is missing in checkoutDetails:", checkoutDetails);
       return res.status(400).json({ message: "User ID is required." });
@@ -27,9 +26,9 @@ const placeOrder = async (req, res) => {
       mapPageData,
     } = checkoutDetails;
 
-    console.log("Extracted User ID:", userId); // Debugging log
+    console.log("Extracted User ID:", userId);
 
-    // Prepare checkout details for database
+    // Include subscriptionType, selectedDates, and selectedDays
     const checkoutData = {
       user_id: userId,
       sender_firstname: senderDetails.firstName,
@@ -42,16 +41,17 @@ const placeOrder = async (req, res) => {
       recipient_zip_code: recipientDetails.zipCode,
       recipient_phone_number: recipientDetails.phone,
       collection_time: wasteCollectionTime,
-      subscription_type: req.body.subscriptionType || null,
+      subscription_type: mapPageData?.subscriptionType || null,
       selected_dates: mapPageData?.selectedDates || null,
       selected_days: mapPageData?.selectedDays || null,
       latitude: mapPageData.latitude,
       longitude: mapPageData.longitude,
+      house_number: mapPageData.houseNo,        // House number
+      street_name: mapPageData.streetName,      // Street name
     };
 
-    console.log("Checkout Data being saved:", checkoutData);  // Debugging log
+    console.log("Checkout Data being saved:", checkoutData);
 
-    // Save to database
     const checkoutId = await Checkout.saveCheckout(checkoutData);
 
     if (paymentDetails?.paymentMethod) {
@@ -71,6 +71,8 @@ const placeOrder = async (req, res) => {
     return res.status(500).json({ message: "Failed to place order. Please try again." });
   }
 };
+
+
 
 module.exports = {
   placeOrder,
