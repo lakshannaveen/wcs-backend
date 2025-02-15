@@ -69,12 +69,21 @@ const saveCheckout = async (checkoutDetails) => {
 };
 
 // Save payment data
-const savePayment = async (checkoutId, paymentType, amount) => {
+const savePayment = async (checkoutId, paymentType, price) => {
+  // Normalize payment type to lowercase to match the database constraint
+  const normalizedPaymentType = paymentType.toLowerCase();
+
+  // Validate paymentType to ensure it is one of the allowed values
+  const validPaymentTypes = ['cash', 'online'];
+  if (!validPaymentTypes.includes(normalizedPaymentType)) {
+    throw new Error(`Invalid payment type: ${paymentType}`);
+  }
+
   const insertPaymentQuery = `
-    INSERT INTO payment (checkout_id, payment_type, amount)
+    INSERT INTO payment (checkout_id, payment_type, price)
     VALUES ($1, $2, $3);
   `;
-  const values = [checkoutId, paymentType, amount];
+  const values = [checkoutId, normalizedPaymentType, price];
 
   try {
     await pool.query(insertPaymentQuery, values);

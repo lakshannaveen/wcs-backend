@@ -28,7 +28,9 @@ const placeOrder = async (req, res) => {
 
     console.log("Extracted User ID:", userId);
 
-    // Include subscriptionType, selectedDates, and selectedDays
+    // Ensure the price is extracted from mapPageData
+    const price = mapPageData?.price || 0;  // Set default price if not available
+
     const checkoutData = {
       user_id: userId,
       sender_firstname: senderDetails.firstName,
@@ -46,8 +48,9 @@ const placeOrder = async (req, res) => {
       selected_days: mapPageData?.selectedDays || null,
       latitude: mapPageData.latitude,
       longitude: mapPageData.longitude,
-      house_number: mapPageData.houseNo,        // House number
-      street_name: mapPageData.streetName,      // Street name
+      house_number: mapPageData.houseNo,
+      street_name: mapPageData.streetName,
+      price,  // Add price here
     };
 
     console.log("Checkout Data being saved:", checkoutData);
@@ -55,7 +58,7 @@ const placeOrder = async (req, res) => {
     const checkoutId = await Checkout.saveCheckout(checkoutData);
 
     if (paymentDetails?.paymentMethod) {
-      await Checkout.savePayment(checkoutId, paymentDetails.paymentMethod, paymentDetails.amount);
+      await Checkout.savePayment(checkoutId, paymentDetails.paymentMethod, price);
     }
 
     if (checkoutData.subscription_type) {
