@@ -21,13 +21,16 @@ const saveCheckout = async (checkoutDetails) => {
     longitude,
   } = checkoutDetails;
 
+  if (!user_id) {
+    throw new Error("User ID is missing when saving checkout.");
+  }
+
   const insertCheckoutQuery = `
     INSERT INTO checkout (
       user_id, sender_firstname, sender_lastname, sender_zip_code, sender_phone_number,
       sender_email, recipient_firstname, recipient_lastname, recipient_zip_code, recipient_phone_number,
       collection_time, subscription_type, selected_dates, selected_days, latitude, longitude
-    )
-    VALUES (
+    ) VALUES (
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
     ) RETURNING id;
   `;
@@ -53,8 +56,9 @@ const saveCheckout = async (checkoutDetails) => {
 
   try {
     const result = await pool.query(insertCheckoutQuery, values);
-    return result.rows[0].id; // Returning the checkout ID
+    return result.rows[0].id;
   } catch (err) {
+    console.error("Database Error:", err);
     throw err;
   }
 };
