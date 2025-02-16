@@ -100,7 +100,9 @@ const getAllCheckouts = async (req, res) => {
         s.expire_date,
         c.subscription_type,
         c.latitude,
-        c.longitude
+        c.longitude,
+        c.house_number,  
+        c.street_name    
       FROM checkout c
       LEFT JOIN (
         SELECT user_id, MAX(expire_date) AS expire_date 
@@ -108,11 +110,12 @@ const getAllCheckouts = async (req, res) => {
         GROUP BY user_id
       ) s ON c.user_id = s.user_id
       GROUP BY c.id, c.user_id, c.sender_firstname, c.sender_lastname, c.recipient_firstname, c.recipient_lastname, 
-        c.collection_time, c.selected_dates, c.selected_days, s.expire_date, c.subscription_type, c.latitude, c.longitude
+        c.collection_time, c.selected_dates, c.selected_days, s.expire_date, c.subscription_type, c.latitude, c.longitude, 
+        c.house_number, c.street_name
     `;
     const result = await pool.query(query);
 
-    return res.status(200).json(result.rows); // Send back the rows of checkout records with the expiration date
+    return res.status(200).json(result.rows); // Send back the rows of checkout records with the expiration date, house number, and street name
   } catch (err) {
     console.error('Error fetching checkouts:', err);
     return res.status(500).json({ message: 'Failed to fetch checkouts. Please try again.' });
