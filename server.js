@@ -10,6 +10,7 @@ const contactRoutes = require('./routes/contactRoutes');
 const feedbackRoutes = require('./routes/feedbackRoute');
 const changePasswordRoute= require('./routes/changePasswordRoute.js')
 const checkoutRoutes = require("./routes/checkoutRoutes");
+const emailRoutes = require('./routes/emailRoutes');
 
 
 
@@ -64,6 +65,8 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
 // Default Route for Health Check
 app.use('/api/password', changePasswordRoute);
+//email routes
+app.use('/api/email', emailRoutes);
 //checout toute
 app.use("/api/checkout", checkoutRoutes);
 app.get('/', (req, res) => {
