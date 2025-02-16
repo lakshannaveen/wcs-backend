@@ -1,4 +1,5 @@
 const Checkout = require('../models/checkoutModel');  // Importing the Checkout model
+const pool = require('../config/db');  // Adjust the path as needed
 
 // Handle the submission of the order and save data across all tables
 const placeOrder = async (req, res) => {
@@ -82,6 +83,20 @@ const placeOrder = async (req, res) => {
 
 
 
+// Get all checkout records
+const getAllCheckouts = async (req, res) => {
+  try {
+    const query = 'SELECT * FROM checkout'; // Query to fetch all checkout records
+    const result = await pool.query(query);
+    
+    return res.status(200).json(result.rows); // Send back the rows of checkout records
+  } catch (err) {
+    console.error('Error fetching checkouts:', err);
+    return res.status(500).json({ message: 'Failed to fetch checkouts. Please try again.' });
+  }
+};
+
 module.exports = {
   placeOrder,
+  getAllCheckouts,
 };
