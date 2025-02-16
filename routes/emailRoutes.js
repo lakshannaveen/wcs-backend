@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 router.post('/sendOrderConfirmation', (req, res) => {
   const orderData = req.body;
-  const { senderDetails, recipientDetails, mapPageData, paymentDetails, wasteCollectionTime } = orderData;
+  const { checkoutId, senderDetails, recipientDetails, mapPageData, paymentDetails, wasteCollectionTime } = orderData;
 
   const isSameSenderRecipient =
     senderDetails.firstName === recipientDetails.firstName &&
@@ -21,21 +21,24 @@ router.post('/sendOrderConfirmation', (req, res) => {
     senderDetails.phone === recipientDetails.phone &&
     senderDetails.zipCode === recipientDetails.zipCode;
 
+  // Updated email content to include checkoutId
   const emailContent = `
     <h2>Order Confirmation</h2>
     
+    <h3>Checkout ID: ${checkoutId}</h3>  <!-- Correct reference to checkoutId -->
+  
     <h3>Sender Details</h3>
     <p><strong>Name:</strong> ${senderDetails.firstName} ${senderDetails.lastName}</p>
     <p><strong>Phone:</strong> ${senderDetails.phone}</p>
     <p><strong>Zip Code:</strong> ${senderDetails.zipCode}</p>
-
+  
     ${!isSameSenderRecipient ? `
       <h3>Recipient Details</h3>
       <p><strong>Name:</strong> ${recipientDetails.firstName} ${recipientDetails.lastName}</p>
       <p><strong>Phone:</strong> ${recipientDetails.phone}</p>
       <p><strong>Zip Code:</strong> ${recipientDetails.zipCode}</p>
     ` : ''}
-
+  
     <h3>Map and Subscription Details</h3>
     <p><strong>Location:</strong> Lat: ${mapPageData.latitude}, Long: ${mapPageData.longitude}</p>
     <p><strong>Subscription Plan:</strong> ${mapPageData.subscriptionPlan}</p>
@@ -43,14 +46,15 @@ router.post('/sendOrderConfirmation', (req, res) => {
     
     ${mapPageData.selectedDates ? `<p><strong>Selected Dates:</strong> ${mapPageData.selectedDates}</p>` : ''}
     ${mapPageData.selectedDays ? `<p><strong>Selected Days:</strong> ${mapPageData.selectedDays}</p>` : ''}
-
+  
     <h3>Waste Collection Time</h3>
     <p><strong>Collection Time:</strong> ${wasteCollectionTime}</p>
-
+  
     <h3>Payment Details</h3>
     <p><strong>Payment Method:</strong> ${paymentDetails.paymentMethod}</p>
     <p><strong>Total Price:</strong> ${mapPageData.subscriptionPrice}</p>
   `;
+  
 
   const mailOptions = {
     from: 'wastecollectionsystem.lk@gmail.com',

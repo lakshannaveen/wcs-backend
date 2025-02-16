@@ -28,7 +28,6 @@ const placeOrder = async (req, res) => {
 
     console.log("Extracted User ID:", userId);
 
-    // Ensure the price is extracted from mapPageData (subscriptionPrice)
     const price = mapPageData?.subscriptionPrice;
 
     if (!price) {
@@ -55,7 +54,7 @@ const placeOrder = async (req, res) => {
       longitude: mapPageData.longitude,
       house_number: mapPageData.houseNo,
       street_name: mapPageData.streetName,
-      price,  // Now using the subscriptionPrice from mapPageData
+      price,
     };
 
     console.log("Checkout Data being saved:", checkoutData);
@@ -70,6 +69,7 @@ const placeOrder = async (req, res) => {
       await Checkout.saveSubscription(userId, checkoutData.subscription_type, new Date());
     }
 
+    // Respond with the checkoutId to the frontend
     return res.status(200).json({
       message: "Order placed successfully",
       checkoutId,
