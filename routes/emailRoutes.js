@@ -21,41 +21,93 @@ router.post('/sendOrderConfirmation', (req, res) => {
     senderDetails.phone === recipientDetails.phone &&
     senderDetails.zipCode === recipientDetails.zipCode;
 
-  // Updated email content to include checkoutId
+  // Updated email content using a table for the bill
   const emailContent = `
     <h2>Order Confirmation</h2>
-    
-    <h3>Checkout ID: ${checkoutId}</h3>  <!-- Correct reference to checkoutId -->
-  
-    <h3>Sender Details</h3>
-    <p><strong>Name:</strong> ${senderDetails.firstName} ${senderDetails.lastName}</p>
-    <p><strong>Phone:</strong> ${senderDetails.phone}</p>
-    <p><strong>Zip Code:</strong> ${senderDetails.zipCode}</p>
-  
-    ${!isSameSenderRecipient ? `
-      <h3>Recipient Details</h3>
-      <p><strong>Name:</strong> ${recipientDetails.firstName} ${recipientDetails.lastName}</p>
-      <p><strong>Phone:</strong> ${recipientDetails.phone}</p>
-      <p><strong>Zip Code:</strong> ${recipientDetails.zipCode}</p>
-    ` : ''}
-  
-    <h3>Map and Subscription Details</h3>
-    <p><strong>Location:</strong> Lat: ${mapPageData.latitude}, Long: ${mapPageData.longitude}</p>
-    <p><strong>Subscription Plan:</strong> ${mapPageData.subscriptionPlan}</p>
-    <p><strong>Subscription Price:</strong> ${mapPageData.subscriptionPrice}</p>
-    
-    ${mapPageData.selectedDates ? `<p><strong>Selected Dates:</strong> ${mapPageData.selectedDates}</p>` : ''}
-    ${mapPageData.selectedDays ? `<p><strong>Selected Days:</strong> ${mapPageData.selectedDays}</p>` : ''}
-  
-    <h3>Waste Collection Time</h3>
-    <p><strong>Collection Time:</strong> ${wasteCollectionTime}</p>
-  
-    <h3>Payment Details</h3>
-    <p><strong>Payment Method:</strong> ${paymentDetails.paymentMethod}</p>
-    <p><strong>Total Price:</strong> ${mapPageData.subscriptionPrice}</p>
+    <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse;">
+      <tr>
+        <th colspan="2">Checkout ID: ${checkoutId}</th>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>Sender Details</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Name:</strong></td>
+        <td>${senderDetails.firstName} ${senderDetails.lastName}</td>
+      </tr>
+      <tr>
+        <td><strong>Phone:</strong></td>
+        <td>${senderDetails.phone}</td>
+      </tr>
+      <tr>
+        <td><strong>Zip Code:</strong></td>
+        <td>${senderDetails.zipCode}</td>
+      </tr>
+      ${!isSameSenderRecipient ? `
+        <tr>
+          <td colspan="2"><strong>Recipient Details</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Name:</strong></td>
+          <td>${recipientDetails.firstName} ${recipientDetails.lastName}</td>
+        </tr>
+        <tr>
+          <td><strong>Phone:</strong></td>
+          <td>${recipientDetails.phone}</td>
+        </tr>
+        <tr>
+          <td><strong>Zip Code:</strong></td>
+          <td>${recipientDetails.zipCode}</td>
+        </tr>
+      ` : ''}
+      <tr>
+        <td colspan="2"><strong>Map and Subscription Details</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Location:</strong></td>
+        <td>Lat: ${mapPageData.latitude}, Long: ${mapPageData.longitude}</td>
+      </tr>
+      <tr>
+        <td><strong>Subscription Plan:</strong></td>
+        <td>${mapPageData.subscriptionPlan}</td>
+      </tr>
+      <tr>
+        <td><strong>Subscription Price:</strong></td>
+        <td>${mapPageData.subscriptionPrice}</td>
+      </tr>
+      ${mapPageData.selectedDates ? `
+        <tr>
+          <td><strong>Selected Dates:</strong></td>
+          <td>${mapPageData.selectedDates}</td>
+        </tr>
+      ` : ''}
+      ${mapPageData.selectedDays ? `
+        <tr>
+          <td><strong>Selected Days:</strong></td>
+          <td>${mapPageData.selectedDays}</td>
+        </tr>
+      ` : ''}
+      <tr>
+        <td colspan="2"><strong>Waste Collection Time</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Collection Time:</strong></td>
+        <td>${wasteCollectionTime}</td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>Payment Details</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Payment Method:</strong></td>
+        <td>${paymentDetails.paymentMethod}</td>
+      </tr>
+      <tr>
+        <td><strong>Total Price:</strong></td>
+        <td>${mapPageData.subscriptionPrice}</td>
+      </tr>
+    </table>
   `;
   
-
   const mailOptions = {
     from: 'wastecollectionsystem.lk@gmail.com',
     to: senderDetails.email,
