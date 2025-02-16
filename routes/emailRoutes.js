@@ -1,4 +1,3 @@
-// routers/emailRoutes.js
 const express = require('express');
 const nodemailer = require('nodemailer');
 
@@ -8,13 +7,13 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'wastecollectionsystem.lk@gmail.com',
-    pass: 'mopgmudksatwogyp', // App password (ensure no spaces)
+    pass: 'mopgmudksatwogyp', // App password 
   },
 });
 
 router.post('/sendOrderConfirmation', (req, res) => {
   const orderData = req.body;
-  const { senderDetails, recipientDetails, mapPageData, paymentDetails } = orderData;
+  const { senderDetails, recipientDetails, mapPageData, paymentDetails, wasteCollectionTime } = orderData;
 
   const isSameSenderRecipient =
     senderDetails.firstName === recipientDetails.firstName &&
@@ -44,6 +43,9 @@ router.post('/sendOrderConfirmation', (req, res) => {
     
     ${mapPageData.selectedDates ? `<p><strong>Selected Dates:</strong> ${mapPageData.selectedDates}</p>` : ''}
     ${mapPageData.selectedDays ? `<p><strong>Selected Days:</strong> ${mapPageData.selectedDays}</p>` : ''}
+
+    <h3>Waste Collection Time</h3>
+    <p><strong>Collection Time:</strong> ${wasteCollectionTime}</p>
 
     <h3>Payment Details</h3>
     <p><strong>Payment Method:</strong> ${paymentDetails.paymentMethod}</p>
