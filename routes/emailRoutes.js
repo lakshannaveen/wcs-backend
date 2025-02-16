@@ -21,14 +21,13 @@ router.post('/sendOrderConfirmation', (req, res) => {
     senderDetails.phone === recipientDetails.phone &&
     senderDetails.zipCode === recipientDetails.zipCode;
 
-  // Updated email content using a table for the bill
-  const emailContent = `
+    const emailContent = `
     <h2>Order Confirmation</h2>
     <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse;">
-      <tr>
+      <tr style="background-color: #e6f7e6;">
         <th colspan="2">Checkout ID: ${checkoutId}</th>
       </tr>
-      <tr>
+      <tr style="background-color: #d9f7d9;">
         <td colspan="2"><strong>Sender Details</strong></td>
       </tr>
       <tr>
@@ -44,7 +43,7 @@ router.post('/sendOrderConfirmation', (req, res) => {
         <td>${senderDetails.zipCode}</td>
       </tr>
       ${!isSameSenderRecipient ? `
-        <tr>
+        <tr style="background-color: #d9f7d9;">
           <td colspan="2"><strong>Recipient Details</strong></td>
         </tr>
         <tr>
@@ -60,7 +59,7 @@ router.post('/sendOrderConfirmation', (req, res) => {
           <td>${recipientDetails.zipCode}</td>
         </tr>
       ` : ''}
-      <tr>
+      <tr style="background-color: #d9f7d9;">
         <td colspan="2"><strong>Map and Subscription Details</strong></td>
       </tr>
       <tr>
@@ -71,9 +70,9 @@ router.post('/sendOrderConfirmation', (req, res) => {
         <td><strong>Subscription Plan:</strong></td>
         <td>${mapPageData.subscriptionPlan}</td>
       </tr>
-      <tr>
+      <tr style="background-color: #d9f7d9;">
         <td><strong>Subscription Price:</strong></td>
-        <td>${mapPageData.subscriptionPrice}</td>
+        <td >${mapPageData.subscriptionPrice}</td>
       </tr>
       ${mapPageData.selectedDates ? `
         <tr>
@@ -87,26 +86,27 @@ router.post('/sendOrderConfirmation', (req, res) => {
           <td>${mapPageData.selectedDays}</td>
         </tr>
       ` : ''}
-      <tr>
+      <tr style="background-color: #d9f7d9;">
         <td colspan="2"><strong>Waste Collection Time</strong></td>
       </tr>
       <tr>
         <td><strong>Collection Time:</strong></td>
         <td>${wasteCollectionTime}</td>
       </tr>
-      <tr>
+      <tr style="background-color: #d9f7d9;">
         <td colspan="2"><strong>Payment Details</strong></td>
       </tr>
       <tr>
         <td><strong>Payment Method:</strong></td>
         <td>${paymentDetails.paymentMethod}</td>
       </tr>
-      <tr>
+      <tr style="background-color: #d9f7d9;">
         <td><strong>Total Price:</strong></td>
-        <td>${mapPageData.subscriptionPrice}</td>
+        <td style="color: #28a745;">${mapPageData.subscriptionPrice}</td>
       </tr>
     </table>
   `;
+  
   
   const mailOptions = {
     from: 'wastecollectionsystem.lk@gmail.com',
