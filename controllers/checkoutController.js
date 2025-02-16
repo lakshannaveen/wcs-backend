@@ -66,8 +66,9 @@ const placeOrder = async (req, res) => {
       await Checkout.savePayment(checkoutId, paymentDetails.paymentMethod, price);
     }
 
+    // Only call saveSubscription once with checkoutId
     if (checkoutData.subscription_type) {
-      await Checkout.saveSubscription(userId, checkoutData.subscription_type, new Date());
+      await Checkout.saveSubscription(userId, checkoutData.subscription_type, new Date(), checkoutId);
     }
 
     // Respond with the checkoutId to the frontend
@@ -80,7 +81,6 @@ const placeOrder = async (req, res) => {
     return res.status(500).json({ message: "Failed to place order. Please try again." });
   }
 };
-
 
 
 // Get all checkout records
@@ -96,7 +96,28 @@ const getAllCheckouts = async (req, res) => {
   }
 };
 
+// Handle cancellation of the order
+const cancelOrder = async (req, res) => {
+  const { id } = req.params;  // Get the order ID from the URL params
+
+  try {
+    // Delete the order with the matching ID
+    const query = 'DELETE FROM checkout WHERE id = $1 RETURNING *';
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Order not found.' });
+    }
+
+    return res.status(200).json({ message: 'Order canceled successfully.' });
+  } catch (err) {
+    console.error('Error canceling order:', err);
+    return res.status(500).json({ message: 'Failed to cancel order. Please try again.' });
+  }
+};
+
 module.exports = {
   placeOrder,
   getAllCheckouts,
+  cancelOrder,
 };

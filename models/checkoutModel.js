@@ -93,12 +93,13 @@ const savePayment = async (checkoutId, paymentType, price) => {
 };
 
 // Save subscription data
-const saveSubscription = async (userId, subscriptionType, startDate) => {
+
+const saveSubscription = async (userId, subscriptionType, startDate, checkoutId) => {
   const insertSubscriptionQuery = `
-    INSERT INTO subscriptions (user_id, subscription_type, start_date)
-    VALUES ($1, $2, $3) RETURNING id;
+    INSERT INTO subscriptions (user_id, subscription_type, start_date, checkout_id)
+    VALUES ($1, $2, $3, $4) RETURNING id;
   `;
-  const values = [userId, subscriptionType, startDate];
+  const values = [userId, subscriptionType, startDate, checkoutId];
 
   try {
     const result = await pool.query(insertSubscriptionQuery, values);
@@ -107,6 +108,7 @@ const saveSubscription = async (userId, subscriptionType, startDate) => {
     throw err;
   }
 };
+
 
 module.exports = {
   saveCheckout,
