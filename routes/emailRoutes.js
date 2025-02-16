@@ -72,7 +72,7 @@ router.post('/sendOrderConfirmation', (req, res) => {
       </tr>
       <tr style="background-color: #d9f7d9;">
         <td><strong>Subscription Price:</strong></td>
-        <td >${mapPageData.subscriptionPrice}</td>
+        <td style="color: #28a745;">${mapPageData.subscriptionPrice}</td>
       </tr>
       ${mapPageData.selectedDates ? `
         <tr>
