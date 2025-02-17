@@ -198,7 +198,7 @@ const getOrderHistory = async (req, res) => {
         c.house_number,
         c.street_name,
         c.collected,
-        p.price  -- Getting the price from the 'payment' table
+        p.price  
       FROM checkout c
       LEFT JOIN (
         SELECT user_id, MAX(expire_date) AS expire_date
@@ -223,6 +223,36 @@ const getOrderHistory = async (req, res) => {
   }
 };
 
+// Update collection time
+const updateCollectionTime = async (req, res) => {
+  const { checkoutId } = req.params;
+  let { collectionTime } = req.body;
+
+  const validTimes = ['Morning', 'Afternoon', 'Evening'];
+
+  // Capitalize the first letter of the collection time
+  collectionTime = collectionTime.charAt(0).toUpperCase() + collectionTime.slice(1).toLowerCase();
+
+  // Check if the collectionTime is valid
+  if (!validTimes.includes(collectionTime)) {
+    return res.status(400).json({ message: 'Invalid collection time.' });
+  }
+
+  try {
+    const query = 'UPDATE checkout SET collection_time = $1 WHERE id = $2 RETURNING *';
+    const result = await pool.query(query, [collectionTime, checkoutId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Checkout not found.' });
+    }
+
+    return res.status(200).json({ message: 'Collection time updated successfully.' });
+  } catch (err) {
+    console.error('Error updating collection time:', err);
+    return res.status(500).json({ message: 'Failed to update collection time. Please try again.' });
+  }
+};
+
 
 module.exports = {
   placeOrder,
@@ -230,4 +260,5 @@ module.exports = {
   cancelOrder,
   updateCollectedStatus,
   getOrderHistory,
+  updateCollectionTime,
 };

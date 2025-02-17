@@ -17,4 +17,7 @@ router.put('/:checkoutId/collected', checkoutController.updateCollectedStatus);
 // Route to get all orders for a specific user (Order History)
 router.get('/order-history', checkoutController.getOrderHistory);
 
+// Route to update collection time for a specific checkout ID
+router.put('/update-collection-time/:checkoutId', checkoutController.updateCollectionTime);
+
 module.exports = router;
