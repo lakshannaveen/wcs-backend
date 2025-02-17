@@ -171,6 +171,57 @@ const updateCollectedStatus = async (req, res) => {
     return res.status(500).json({ message: 'Failed to update collected status. Please try again.' });
   }
 };
+const getOrderHistory = async (req, res) => {
+  const userId = req.query.user_id;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required." });
+  }
+
+  try {
+    console.log("Fetching orders for user:", userId); // Log user ID
+    const query = `
+      SELECT
+        c.id AS checkout_id,
+        c.user_id,
+        c.sender_firstname,
+        c.sender_lastname,
+        c.recipient_firstname,
+        c.recipient_lastname,
+        c.collection_time,
+        c.selected_dates,
+        c.selected_days,
+        s.expire_date,
+        c.subscription_type,
+        c.latitude,
+        c.longitude,
+        c.house_number,
+        c.street_name,
+        c.collected,
+        p.price  -- Getting the price from the 'payment' table
+      FROM checkout c
+      LEFT JOIN (
+        SELECT user_id, MAX(expire_date) AS expire_date
+        FROM subscriptions
+        GROUP BY user_id
+      ) s ON c.user_id = s.user_id
+      LEFT JOIN payment p ON c.id = p.checkout_id  -- Join payment table to get the price
+      WHERE c.user_id = $1
+      ORDER BY c.collection_time DESC;
+    `;
+
+    const result = await pool.query(query, [userId]);
+
+    if (result.rows.length === 0) {
+      console.log("No orders found for this user.");
+    }
+
+    return res.status(200).json(result.rows);
+  } catch (err) {
+    console.error('Error fetching checkouts:', err);
+    return res.status(500).json({ message: 'Failed to fetch checkouts. Please try again.' });
+  }
+};
 
 
 module.exports = {
@@ -178,4 +229,5 @@ module.exports = {
   getAllCheckouts,
   cancelOrder,
   updateCollectedStatus,
+  getOrderHistory,
 };

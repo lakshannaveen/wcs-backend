@@ -14,4 +14,7 @@ router.delete('/cancel/:id', checkoutController.cancelOrder);
 // Route to update collected status
 router.put('/:checkoutId/collected', checkoutController.updateCollectedStatus);
 
+// Route to get all orders for a specific user (Order History)
+router.get('/order-history', checkoutController.getOrderHistory);
+
 module.exports = router;
