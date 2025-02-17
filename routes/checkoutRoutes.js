@@ -11,5 +11,7 @@ router.get('/checkouts', checkoutController.getAllCheckouts);
 // Route to cancel an order
 router.delete('/cancel/:id', checkoutController.cancelOrder);
 
+// Route to update collected status
+router.put('/:checkoutId/collected', checkoutController.updateCollectedStatus);
 
 module.exports = router;

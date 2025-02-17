@@ -84,42 +84,47 @@ const placeOrder = async (req, res) => {
 
 
 // Get all checkout records
-const getAllCheckouts = async (req, res) => {
-  try {
-    const query = `
-      SELECT 
-        c.id AS checkout_id, 
-        c.user_id, 
-        c.sender_firstname, 
-        c.sender_lastname, 
-        c.recipient_firstname, 
-        c.recipient_lastname, 
-        c.collection_time, 
-        c.selected_dates, 
-        c.selected_days,
-        s.expire_date,
-        c.subscription_type,
-        c.latitude,
-        c.longitude,
-        c.house_number,  
-        c.street_name    
-      FROM checkout c
-      LEFT JOIN (
-        SELECT user_id, MAX(expire_date) AS expire_date 
-        FROM subscriptions 
-        GROUP BY user_id
-      ) s ON c.user_id = s.user_id
-      GROUP BY c.id, c.user_id, c.sender_firstname, c.sender_lastname, c.recipient_firstname, c.recipient_lastname, 
-        c.collection_time, c.selected_dates, c.selected_days, s.expire_date, c.subscription_type, c.latitude, c.longitude, 
-        c.house_number, c.street_name
-    `;
-    const result = await pool.query(query);
+const getAllCheckouts = async (req, res) => {   
+  try {     
+    const query = `       
+      SELECT          
+        c.id AS checkout_id,          
+        c.user_id,          
+        c.sender_firstname,          
+        c.sender_lastname,          
+        c.recipient_firstname,          
+        c.recipient_lastname,          
+        c.collection_time,          
+        c.selected_dates,          
+        c.selected_days,         
+        s.expire_date,         
+        c.subscription_type,         
+        c.latitude,         
+        c.longitude,         
+        c.house_number,           
+        c.street_name,  
+        c.collected
+      FROM checkout c       
+      LEFT JOIN (         
+        SELECT user_id, MAX(expire_date) AS expire_date          
+        FROM subscriptions          
+        GROUP BY user_id       
+      ) s ON c.user_id = s.user_id       
+      GROUP BY 
+        c.id, c.user_id, c.sender_firstname, c.sender_lastname, 
+        c.recipient_firstname, c.recipient_lastname, 
+        c.collection_time, c.selected_dates, c.selected_days, 
+        s.expire_date, c.subscription_type, c.latitude, c.longitude, 
+        c.house_number, c.street_name, c.collected
+    `;     
 
-    return res.status(200).json(result.rows); // Send back the rows of checkout records with the expiration date, house number, and street name
-  } catch (err) {
-    console.error('Error fetching checkouts:', err);
-    return res.status(500).json({ message: 'Failed to fetch checkouts. Please try again.' });
-  }
+    const result = await pool.query(query);      
+
+    return res.status(200).json(result.rows);   
+  } catch (err) {     
+    console.error('Error fetching checkouts:', err);     
+    return res.status(500).json({ message: 'Failed to fetch checkouts. Please try again.' });   
+  } 
 };
 
 
@@ -143,9 +148,34 @@ const cancelOrder = async (req, res) => {
     return res.status(500).json({ message: 'Failed to cancel order. Please try again.' });
   }
 };
+// Update 'collected' status when the checkbox is clicked
+const updateCollectedStatus = async (req, res) => {
+  const { checkoutId } = req.params;  // Get the checkout ID from the URL params
+  const { collected } = req.body;  // The collected status (true or false)
+
+  try {
+    if (typeof collected !== 'boolean') {
+      return res.status(400).json({ message: 'Invalid collected status.' });
+    }
+
+    const query = 'UPDATE checkout SET collected = $1 WHERE id = $2 RETURNING *';
+    const result = await pool.query(query, [collected, checkoutId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Checkout not found.' });
+    }
+
+    return res.status(200).json({ message: 'Checkout status updated successfully.' });
+  } catch (err) {
+    console.error('Error updating collected status:', err);
+    return res.status(500).json({ message: 'Failed to update collected status. Please try again.' });
+  }
+};
+
 
 module.exports = {
   placeOrder,
   getAllCheckouts,
   cancelOrder,
+  updateCollectedStatus,
 };
