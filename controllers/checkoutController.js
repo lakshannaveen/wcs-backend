@@ -198,14 +198,15 @@ const getOrderHistory = async (req, res) => {
         c.house_number,
         c.street_name,
         c.collected,
-        p.price  
+        p.price,
+        p.payment_type  
       FROM checkout c
       LEFT JOIN (
         SELECT user_id, MAX(expire_date) AS expire_date
         FROM subscriptions
         GROUP BY user_id
       ) s ON c.user_id = s.user_id
-      LEFT JOIN payment p ON c.id = p.checkout_id  -- Join payment table to get the price
+      LEFT JOIN payment p ON c.id = p.checkout_id  -- Join payment table to get price and payment_type
       WHERE c.user_id = $1
       ORDER BY c.collection_time DESC;
     `;
