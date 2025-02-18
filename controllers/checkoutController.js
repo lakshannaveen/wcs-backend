@@ -101,7 +101,8 @@ const getAllCheckouts = async (req, res) => {
         c.subscription_type,         
         c.latitude,         
         c.longitude,         
-        c.house_number,           
+        c.house_number,     
+         c.created_at,        
         c.street_name,  
         c.collected
       FROM checkout c       
