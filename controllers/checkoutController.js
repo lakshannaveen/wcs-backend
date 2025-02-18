@@ -239,21 +239,28 @@ const updateCollectionTime = async (req, res) => {
     return res.status(400).json({ message: 'Invalid collection time.' });
   }
 
+  // Store the update in the pending_updates table for the next day
+  const query = `
+    INSERT INTO pending_updates (checkout_id, collection_time, scheduled_at)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
+  const scheduledTime = new Date();
+  scheduledTime.setHours(24, 0, 0, 0); // Set time to midnight of the next day
+
   try {
-    const query = 'UPDATE checkout SET collection_time = $1 WHERE id = $2 RETURNING *';
-    const result = await pool.query(query, [collectionTime, checkoutId]);
+    const result = await pool.query(query, [checkoutId, collectionTime, scheduledTime]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Checkout not found.' });
     }
 
-    return res.status(200).json({ message: 'Collection time updated successfully.' });
+    return res.status(200).json({ message: 'Collection time update scheduled for tomorrow.' });
   } catch (err) {
-    console.error('Error updating collection time:', err);
-    return res.status(500).json({ message: 'Failed to update collection time. Please try again.' });
+    console.error('Error storing pending update:', err);
+    return res.status(500).json({ message: 'Failed to schedule update. Please try again.' });
   }
 };
-
 
 module.exports = {
   placeOrder,
