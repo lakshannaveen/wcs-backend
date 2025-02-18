@@ -13,6 +13,8 @@ const checkoutRoutes = require("./routes/checkoutRoutes");
 const emailRoutes = require('./routes/emailRoutes');
 
 require('./controllers/cron/updatePendingCollectionTimes');
+require('./controllers/cron/updateCollectionStatus'); 
+
 
 
 
