@@ -198,6 +198,7 @@ const getOrderHistory = async (req, res) => {
         c.house_number,
         c.street_name,
         c.collected,
+        c.created_at,  
         p.price,
         p.payment_type  
       FROM checkout c
@@ -208,7 +209,7 @@ const getOrderHistory = async (req, res) => {
       ) s ON c.user_id = s.user_id
       LEFT JOIN payment p ON c.id = p.checkout_id  -- Join payment table to get price and payment_type
       WHERE c.user_id = $1
-      ORDER BY c.collection_time DESC;
+      ORDER BY c.created_at DESC;  
     `;
 
     const result = await pool.query(query, [userId]);
@@ -223,6 +224,7 @@ const getOrderHistory = async (req, res) => {
     return res.status(500).json({ message: 'Failed to fetch checkouts. Please try again.' });
   }
 };
+
 
 // Update collection time
 const updateCollectionTime = async (req, res) => {
