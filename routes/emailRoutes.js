@@ -21,7 +21,28 @@ router.post('/sendOrderConfirmation', (req, res) => {
     senderDetails.phone === recipientDetails.phone &&
     senderDetails.zipCode === recipientDetails.zipCode;
 
-    const emailContent = `
+  // Ensure subscription plan is set correctly
+  if (!mapPageData.subscriptionPlan) {
+    const subscriptionPrice = mapPageData.subscriptionPrice;
+    switch (subscriptionPrice) {
+      case 200:
+        mapPageData.subscriptionPlan = "One-Time";
+        break;
+      case 2000:
+        mapPageData.subscriptionPlan = "Weekly";
+        break;
+      case 5000:
+        mapPageData.subscriptionPlan = "Daily";
+        break;
+      case 1000:
+        mapPageData.subscriptionPlan = "Monthly";
+        break;
+      default:
+        mapPageData.subscriptionPlan = "Unknown Plan";
+    }
+  }
+
+  const emailContent = `
     <h2>Order Confirmation</h2>
     <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse;">
       <tr style="background-color: #e6f7e6;">
@@ -106,8 +127,7 @@ router.post('/sendOrderConfirmation', (req, res) => {
       </tr>
     </table>
   `;
-  
-  
+
   const mailOptions = {
     from: 'wastecollectionsystem.lk@gmail.com',
     to: senderDetails.email,
