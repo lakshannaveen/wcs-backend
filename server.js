@@ -11,6 +11,7 @@ const feedbackRoutes = require('./routes/feedbackRoute');
 const changePasswordRoute= require('./routes/changePasswordRoute.js')
 const checkoutRoutes = require("./routes/checkoutRoutes");
 const emailRoutes = require('./routes/emailRoutes');
+const stripeRoutes = require('./routes/stripeRoutes');
 
 require('./controllers/cron/updatePendingCollectionTimes');
 require('./controllers/cron/updateCollectionStatus'); 
@@ -72,6 +73,9 @@ app.use('/api/password', changePasswordRoute);
 app.use('/api/email', emailRoutes);
 //checout toute
 app.use("/api/checkout", checkoutRoutes);
+
+// Stripe Routes
+app.use('/api/payment', stripeRoutes);
 app.get('/', (req, res) => {
     res.status(200).send('Waste Collection System Backend is Running');
 });
