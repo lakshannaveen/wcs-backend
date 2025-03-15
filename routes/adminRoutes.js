@@ -1,6 +1,7 @@
 const express = require('express');
 const { adminLogin } = require('../controllers/adminController');
 const { checkAuth } = require('../middlewares/adminMiddleware');
+const { adminRegister } = require('../controllers/adminController');
 const router = express.Router();
 
 // Admin login route - no authentication needed for login
@@ -16,5 +17,7 @@ router.get('/protected-route', checkAuth, (req, res) => {
 router.get('/admin/dashboard', checkAuth, (req, res) => {
   res.send('Admin dashboard accessible');
 });
+// Admin registration route
+router.post('/register', adminRegister);
 
 module.exports = router;
