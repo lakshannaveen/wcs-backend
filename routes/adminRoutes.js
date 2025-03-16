@@ -1,5 +1,5 @@
 const express = require('express');
-const { adminLogin } = require('../controllers/adminController');
+const { adminLogin,getAdminLogins } = require('../controllers/adminController');
 const { checkAuth } = require('../middlewares/adminMiddleware');
 const { adminRegister } = require('../controllers/adminController');
 const router = express.Router();
@@ -19,5 +19,6 @@ router.get('/admin/dashboard', checkAuth, (req, res) => {
 });
 // Admin registration route
 router.post('/register', adminRegister);
+router.get("/logins", getAdminLogins);
 
 module.exports = router;

@@ -80,5 +80,28 @@ const adminRegister = async (req, res) => {
     res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 };
+// API to get admin login details from log file
+const getAdminLogins = (req, res) => {
+  const logFilePath = path.join(__dirname, "../admin_logins.txt");
 
-module.exports = { adminLogin, adminRegister };
+  fs.readFile(logFilePath, "utf8", (err, data) => {
+    if (err) {
+      console.error("Error reading admin log file:", err);
+      return res.status(500).json({ message: "Error fetching admin logins" });
+    }
+
+    const logEntries = data
+      .trim()
+      .split("\n")
+      .map((entry) => {
+        const parts = entry.split(" logged in at ");
+        return { email: parts[0].replace("Admin: ", ""), time: parts[1] };
+      });
+
+    res.json(logEntries);
+  });
+};
+
+
+
+module.exports = { adminLogin, adminRegister, getAdminLogins };
