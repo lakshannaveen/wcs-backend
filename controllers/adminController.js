@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 const pool = require('../config/db'); 
 const { getAdminByEmail } = require('../models/adminModel');
 
@@ -32,6 +34,17 @@ const adminLogin = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+
+    // Log admin login details to a file
+    const loginTime = new Date().toLocaleString();
+    const logData = `Admin: ${email} logged in at ${loginTime}\n`;
+    const logFilePath = path.join(__dirname, "../admin_logins.txt");
+
+    fs.appendFile(logFilePath, logData, (err) => {
+      if (err) {
+        console.error("Error logging admin login:", err);
+      }
     });
 
     res.status(200).json({ message: 'Login successful' });
