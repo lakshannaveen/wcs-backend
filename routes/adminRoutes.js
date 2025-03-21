@@ -1,5 +1,5 @@
 const express = require('express');
-const { adminLogin,getAdminLogins } = require('../controllers/adminController');
+const { adminLogin,getAdminLogins,getAllAdmins,deleteAdmin } = require('../controllers/adminController');
 const { checkAuth } = require('../middlewares/adminMiddleware');
 const { adminRegister } = require('../controllers/adminController');
 const router = express.Router();
@@ -20,5 +20,9 @@ router.get('/admin/dashboard', checkAuth, (req, res) => {
 // Admin registration route
 router.post('/register', adminRegister);
 router.get("/logins", getAdminLogins);
+// Route to get all admins
+router.get('/admins', getAllAdmins);
 
+// Route to delete an admin by ID
+router.delete('/admin/:adminId', deleteAdmin);
 module.exports = router;

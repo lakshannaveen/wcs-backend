@@ -104,4 +104,37 @@ const getAdminLogins = (req, res) => {
 
 
 
-module.exports = { adminLogin, adminRegister, getAdminLogins };
+// Function to get all admins
+const getAllAdmins = async (req, res) => {
+  try {
+    // Query to get all admin details (email, id, etc.)
+    const result = await pool.query('SELECT id, email FROM admins');
+    
+    // Send the list of admins as a response
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch admin details.' });
+  }
+};
+
+// Function to delete an admin by ID
+const deleteAdmin = async (req, res) => {
+  const { adminId } = req.params; // Get the admin ID from the route parameter
+
+  try {
+    // Query to delete the admin by ID
+    const result = await pool.query('DELETE FROM admins WHERE id = $1', [adminId]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    res.status(200).json({ message: 'Admin deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to delete admin.' });
+  }
+};
+
+module.exports = { adminLogin, adminRegister, getAdminLogins, getAllAdmins, deleteAdmin };
