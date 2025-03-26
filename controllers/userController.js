@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { createUser, getUserByUsername } = require('../models/userModel'); // Ensure getUserByUsername is imported
 const { verifyToken } = require('../middlewares/authMiddleware'); // Import the verifyToken middleware
 
+
 // Helper function to generate JWT
 const generateToken = (user) => {
   const payload = {
@@ -15,6 +16,7 @@ const generateToken = (user) => {
   return token;
 };
 
+// Register function
 // Register function
 const registerUser = async (req, res) => {
   const { firstname, lastname, username, email, createpassword } = req.body;
@@ -50,9 +52,10 @@ const registerUser = async (req, res) => {
       sameSite: 'Strict', // Prevent CSRF attacks
     });
 
-    // Send the response
+    // Send the response with the token
     res.status(201).json({
       message: 'User registered successfully',
+      token, // Include token in response
       user: {
         id: newUser.id,
         username: newUser.username,

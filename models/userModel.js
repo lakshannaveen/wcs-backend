@@ -64,5 +64,4 @@ const updatePasswordInDb = async (email, hashedPassword) => {
     throw new Error('Error updating password in database');
   }
 };
-
-module.exports = { getUserByEmail, updatePasswordInDb,getUserByUsername };
+module.exports = { createUser, getUserByEmail, updatePasswordInDb, getUserByUsername };
