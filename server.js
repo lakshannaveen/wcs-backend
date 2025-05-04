@@ -63,17 +63,17 @@ app.locals.pool = pool;
 // contact Routes
 app.use('/api/contact', contactRoutes);
 // Register routes
-app.use('/api/users', userRoutes); // Attach the user routes under the /api/users path
+app.use('/api/users', userRoutes); 
 // feedbackRoutes
 app.use('/api/feedback', feedbackRoutes);
+// Admin Routes
 app.use('/api/admin', adminRoutes);
-// Default Route for Health Check
+// passowrd change route
 app.use('/api/password', changePasswordRoute);
 //email routes
 app.use('/api/email', emailRoutes);
 //checout toute
 app.use("/api/checkout", checkoutRoutes);
-
 // Stripe Routes
 app.use('/api/payment', stripeRoutes);
 app.get('/', (req, res) => {
